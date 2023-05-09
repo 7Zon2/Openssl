@@ -8,7 +8,212 @@
 #include <vector>
 
 
-#define DEBUG
+//#define DEBUG
+
+
+
+
+double get_file(std::vector<std::string>& vec,std::ifstream &file,std::string& source)
+{
+
+    std::string address;
+    char symbol;
+    double count=0;
+
+        file.open(source, std::fstream::in);
+        if (!file.is_open())
+        {
+            std::cerr << "File open error" << std::endl;
+            exit(1);
+        }
+        else {
+            while (!file.eof())
+            {
+                file >> address;
+                symbol = file.get();
+                if ((symbol == ' ') || (symbol == '\n'))
+                {
+                    vec.push_back(address);
+                    ++count;
+                }
+
+            }
+            file.close();
+            vec.push_back(address);
+
+        }
+    
+    return count;
+}
+
+
+//class Certification
+//{
+//private:
+//
+//    int errSock;
+//    int errSSL;
+//    std::wstring address;
+//    std::wstring port;
+//
+//    WSADATA wsa;
+//    WORD version = MAKEWORD(2, 2); 
+//
+//    SOCKET Sock;
+//    addrinfoW hints;
+//    addrinfoW* res;
+//
+//    SSL* ssl;
+//    X509* certif;
+//    SSL_CTX* ctx;
+//
+//    void check_Sock_error(int err);
+//
+//    void check_SSL_error(int err);
+//
+//    void fillAddr();
+//
+//    void SocketCreate();
+// 
+//    void SocketConnection();
+//
+//    void getMethod();
+//
+//    void getSSL();
+//
+//    void bind_sock_ssl();
+//
+//    void SSLConnect();
+//
+//    void getCert();
+//
+//public:
+//    Certification(std::wstring &address,std::wstring &port) : address(address),port(port)
+//    {
+//        errSock = WSAStartup(version, &wsa);
+//        check_Sock_error(errSock);
+//        SSLeay_add_ssl_algorithms();
+//        SSL_load_error_strings();
+//        fillAddr();
+//    }
+//
+//
+//    ~Certification()
+//    {
+//        closesocket(Sock);
+//        WSACleanup();
+//    }
+//};
+//
+//
+//void Certification::check_Sock_error(int err)
+//{
+//    if (err == SOCKET_ERROR)
+//    {
+//        std::cerr << "Socket error" << std::endl;
+//        exit(1);
+//    }
+//}
+//
+//
+//void Certification::check_SSL_error(int err)
+//{
+//    if (err == 0 || err < 0)
+//    {
+//        std::cerr << "SSl Error" << SSL_get_error(ssl, err);
+//    }
+//}
+//
+//
+//void Certification::fillAddr()
+//{
+//    memset(&hints, 0, sizeof(hints));
+//    hints.ai_family = AF_UNSPEC;
+//    hints.ai_socktype = SOCK_STREAM;
+//    hints.ai_protocol = IPPROTO_TCP;
+//
+//    errSock = GetAddrInfoW(address.c_str(), port.c_str(), &hints, &res);
+//    check_Sock_error(errSock);
+//
+//    SocketCreate();
+//}
+//
+//
+//void Certification::SocketCreate()
+//{
+//    Sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+//    if (Sock == INVALID_SOCKET)
+//    {
+//        exit(1);
+//    }
+//    else {
+//        SocketConnection();
+//    }
+//}
+//
+//
+//void Certification::SocketConnection()
+//{
+//    errSock = connect(Sock, res->ai_addr, res->ai_addrlen);
+//    check_Sock_error(errSock);
+//
+//    getMethod();
+//}
+//
+//
+//void Certification::getMethod()
+//{
+//    ctx = SSL_CTX_new(TLS_method());
+//    if (ctx == 0 || ctx < 0)
+//    {
+//        std::cerr << "SSL Error" << std::endl;
+//        exit(1);
+//    }
+//    else {
+//        getSSL();
+//    }
+//}
+//
+//
+//void Certification::getSSL()
+//{
+//    ssl=SSL_new(ctx);
+//    if (ctx == 0 || ctx < 0)
+//    {
+//        std::cerr << "SSL Error" << std::endl;
+//        exit(1);
+//    }
+//    else {
+//        bind_sock_ssl();
+//    }
+//
+//}
+//
+//void Certification::bind_sock_ssl()
+//{
+//    errSSL = SSL_set_fd(ssl, Sock);
+//    check_SSL_error(errSSL);
+//    SSLConnect();
+//
+//}
+//
+//
+//void Certification::SSLConnect()
+//{
+//    errSSL = SSL_connect(ssl);
+//    check_SSL_error(errSSL);
+//    getCert();
+//}
+//
+//
+//void Certification::getCert()
+//{
+//    
+//}
+
+/*=================================================================================================================================================*/
+
+
 
 int main(int argc,char* argv[])
 {
@@ -53,41 +258,25 @@ int main(int argc,char* argv[])
 #endif // DEBUG
 
         if (flag == true)
-        {         
-            file.open(source, std::fstream::in);
-            if (!file.is_open())
-            {
-                std::cerr << "File open error" << std::endl;
-                exit(1);
-            }
-            else {
-                while (!file.eof())
-                {
-                    file >> address;
-                    symbol = file.get();        
-                    if ((symbol == ' ') || (symbol == '\n'))
-                    {
-                        vec.push_back(address);
-                        ++count;
-                    }
-
-                }
-                file.close();
-                vec.push_back(address);
-                
-            }
-
+        {            
+            count=get_file(vec, file, source);
         }
         else {
             vec.push_back(address);
-            i = count;
         }
-     
-
 
         do {
 
-            std::cout << i / count * 100 << "%" <<" -  "<<vec[i]<< std::endl;
+            if (flag == false)
+            {
+                i = 1;
+                count = 1;
+                std::cout << i / count * 100 << "%" << " - " << vec[i] << std::endl;
+            }
+            else {
+                std::cout << i / count * 100 << "%" << " - " << vec[i] << std::endl;
+            }
+          
 
             WSADATA wsa;
             WORD version = MAKEWORD(2, 2);
@@ -107,7 +296,7 @@ int main(int argc,char* argv[])
             hints.ai_socktype = SOCK_STREAM;
             hints.ai_protocol = IPPROTO_TCP;
 
-            err = getaddrinfo(vec[i].c_str(), port.c_str(), &hints, &res);
+            err = getaddrinfo(address.c_str(), port.c_str(), &hints, &res);
             if (err == SOCKET_ERROR)
             {
                 std::cerr << "geraddrinfo Error" << WSAGetLastError() << std::endl;
